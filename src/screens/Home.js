@@ -8,7 +8,7 @@ const Home = () => {
   const [input2, setInput2] = useState('');
   const [input3, setInput3] = useState('');
   const [input4, setInput4] = useState('');
-  const [predictedLabel, setPredictedLabel] = useState(null);
+  const [predictedLabel, setPredictedLabel] = useState("");
 
   const [response, setResponse] = useState(null);
 
@@ -22,16 +22,12 @@ const Home = () => {
         ]]
       };
 
-      console.log("paylaod=>",payload )
       const apiResponse = await postToApi(payload);
 
-      console.log('Api=>',apiResponse["predictions"][0]["predicted_label"])
-
-        // Assuming the API response contains the 'predictions' array
         if (apiResponse.predictions && apiResponse.predictions.length > 0) {
             // Get the first prediction and its predicted_label
             const firstPrediction = apiResponse.predictions[0];
-            setPredictedLabel(firstPrediction.predicted_label); // Extract and set the predicted_label
+            setPredictedLabel(firstPrediction.predicted_label)
           }
 
       setResponse(apiResponse);
@@ -41,6 +37,27 @@ const Home = () => {
       setResponse({ error: 'Something went wrong. Please try again later.' });
     }
   };
+  const predToTextHandler = (predlabel) => {
+   var balTxt = '';
+    const Balances = {
+      CENTER: 'Center',
+      LEFT: 'Left',
+      RIGHT: 'Right',
+      UNKNOWN: 'Unknown'
+    };
+    if(predlabel==0){
+      balTxt = (Balances.CENTER)
+    }
+    else if(predlabel==1){
+      balTxt = (Balances.LEFT)
+    }
+    else if (predlabel==2){
+      balTxt = (Balances.RIGHT)
+    } else{
+      balTxt = (Balances.UNKNOWN)
+    }
+    return balTxt
+  }
 
   return (
     <div className="form-container">
@@ -67,8 +84,8 @@ const Home = () => {
 
       {predictedLabel !== null && (
         <div>
-          <h3>Predicted Label:</h3>
-          <p>{predictedLabel}</p> {/* Display the predicted_label */}
+          <h3>Balance of scale:</h3>
+          <p>{predToTextHandler(predictedLabel)}</p>
         </div>
       )}
     </div>
